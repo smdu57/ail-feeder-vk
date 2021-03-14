@@ -1,6 +1,12 @@
 # Ail-feeder-vk
 
 This script provide data from VK.com to feed the application AIL Project via a string query.
+The program will search in those fields :
+- users
+- groups
+- documents (not yet implemented)
+- photos (not yet implemented)
+- newsfeed (not yet implemented)
 
 ##Install
 
