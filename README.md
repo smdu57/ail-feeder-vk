@@ -5,8 +5,8 @@ The program will search in those fields :
 - users
 - groups
 - documents
-- photos (not yet implemented)
-- newsfeed (not yet implemented)
+- photos
+- newsfeed
 
 ##Install
 

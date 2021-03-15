@@ -91,7 +91,7 @@ for obj in docs:
     data['meta']['vk:owner'] = obj['owner_id']
     data['meta']['vk:url'] = obj['url']
     data['meta']['vk:date'] = obj['date']
-    data['meta']['size'] = obj['size']
+    data['meta']['vk:size'] = obj['size']
     data['data'] = str(base64.b64encode(gzip.compress(obj['title'].encode())))
     m = hashlib.sha256()
     m.update(obj['title'].encode('utf-8'))
@@ -99,4 +99,51 @@ for obj in docs:
     response = requests.post(ail, headers={'Content-Type': 'application/json', 'Authorization': api_k}, data=json.dumps(data), verify=False)
     print(response)
 
+for obj in news:
+    data = {'source': 'VK feeder', 'source-uuid': 'bdf86b8c-edcf-40b8-9f39-a34242df6181', 'default-encoding': 'UTF-8',
+            'meta': {}}
+    if r.exists("n:{}".format(obj['id'])):
+        print("Data already in DB")
+        continue
+    r.set("n:{}".format(obj['id']), obj['text'])
+    data['meta']['vk:id'] = obj['id']
+    data['meta']['vk:text'] = obj['text']
+    data['meta']['vk:owner'] = obj['owner_id']
+    data['meta']['vk:date'] = obj['date']
+    try:
+        data['meta']['vk:attachments'] = obj['attachments']
+    except:
+        pass
+    data['data'] = str(base64.b64encode(gzip.compress(obj['text'].encode())))
+    m = hashlib.sha256()
+    m.update(obj['text'].encode('utf-8'))
+    data['data-sha256'] = m.hexdigest()
+    response = requests.post(ail, headers={'Content-Type': 'application/json', 'Authorization': api_k}, data=json.dumps(data), verify=False)
+    print(response)
+
+for obj in photos:
+    data = {'source': 'VK feeder', 'source-uuid': 'bdf86b8c-edcf-40b8-9f39-a34242df6181', 'default-encoding': 'UTF-8',
+            'meta': {}}
+    if r.exists("p:{}".format(obj['id'])):
+        print("Data already in DB")
+        continue
+    try:
+        obj['text']
+    except:
+        obj['text'] = ""
+    r.set("p:{}".format(obj['id']), obj['text'])
+    data['meta']['vk:id'] = obj['id']
+    data['meta']['vk:album_id'] = obj['album_id']
+    data['meta']['vk:owner'] = obj['owner_id']
+    data['meta']['vk:date'] = obj['date']
+    try:
+        data['meta']['vk:photo'] = obj['photo_75']
+    except:
+        data['meta']['vk:photo'] = obj['photo_130']
+    data['data'] = str(base64.b64encode(gzip.compress(obj['text'].encode())))
+    m = hashlib.sha256()
+    m.update(obj['text'].encode('utf-8'))
+    data['data-sha256'] = m.hexdigest()
+    response = requests.post(ail, headers={'Content-Type': 'application/json', 'Authorization': api_k}, data=json.dumps(data), verify=False)
+    print(response)
 
