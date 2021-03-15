@@ -27,7 +27,7 @@ else:
         host = config['redis']['host']
         port = config['redis']['port']
         ail = config['ail']['url']
-        apik = config['ail']['api']
+        api_k = config['ail']['api']
     else:
         print("There is an error reading the file, be sure it look the same as the example")
         input("Press any key to exit")
@@ -76,5 +76,27 @@ for obj in profiles:
     m = hashlib.sha256()
     m.update(obj['description'].encode('utf-8'))
     data['data-sha256'] = m.hexdigest()
-    response = requests.post(ail, headers={'Content-Type': 'application/json', 'Authorization': apik}, data=json.dumps(data), verify=False)
+    response = requests.post(ail, headers={'Content-Type': 'application/json', 'Authorization': api_k}, data=json.dumps(data), verify=False)
     print(response)
+
+for obj in docs:
+    data = {'source': 'VK feeder', 'source-uuid': 'bdf86b8c-edcf-40b8-9f39-a34242df6181', 'default-encoding': 'UTF-8',
+            'meta': {}}
+    if r.exists("d:{}".format(obj['id'])):
+        print("Data already in DB")
+        continue
+    r.set("d:{}".format(obj['id']), obj['title'])
+    data['meta']['vk:id'] = obj['id']
+    data['meta']['vk:title'] = obj['title']
+    data['meta']['vk:owner'] = obj['owner_id']
+    data['meta']['vk:url'] = obj['url']
+    data['meta']['vk:date'] = obj['date']
+    data['meta']['size'] = obj['size']
+    data['data'] = str(base64.b64encode(gzip.compress(obj['title'].encode())))
+    m = hashlib.sha256()
+    m.update(obj['title'].encode('utf-8'))
+    data['data-sha256'] = m.hexdigest()
+    response = requests.post(ail, headers={'Content-Type': 'application/json', 'Authorization': api_k}, data=json.dumps(data), verify=False)
+    print(response)
+
+

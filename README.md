@@ -4,7 +4,7 @@ This script provide data from VK.com to feed the application AIL Project via a s
 The program will search in those fields :
 - users
 - groups
-- documents (not yet implemented)
+- documents
 - photos (not yet implemented)
 - newsfeed (not yet implemented)
 
